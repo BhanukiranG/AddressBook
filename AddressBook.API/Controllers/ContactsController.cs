@@ -58,11 +58,10 @@ namespace AddressBook.API.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateContactDto dto)
         {
-            if (id != dto.Id) return Failure("ID mismatch", 400);
+            var contact = await _repository.GetByIdAsync(id);
+            if (contact == null) return Failure("Contact not found", 404);
 
-            var contact = _mapper.Map<Contacts>(dto);
             var updated = await _repository.UpdateAsync(contact);
-
             if (!updated) return Failure("Contact not found", 404);
 
             var updatedContact = await _repository.GetByIdAsync(id);
