@@ -17,12 +17,11 @@ public class ExceptionMiddleware
     {
         try
         {
-            await _next(context); // Call next middleware / controller
+            await _next(context);
         }
         catch (Exception ex)
         {
-            // Optionally log exception
-            Console.WriteLine(ex); // replace with ILogger in production
+            Console.WriteLine(ex);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
