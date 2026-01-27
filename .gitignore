@@ -1,0 +1,91 @@
+# ======================================
+# .NET / C# / Rider Git Ignore for macOS
+# ======================================
+
+# Build Folders
+bin/
+obj/
+Debug/
+Release/
+
+# Rider IDE files
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.vs/
+*.vscode/
+
+# NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Logs
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# JetBrains Rider
+.idea/
+*.iws
+out/
+
+# ASP.NET Core / web specific
+wwwroot/lib/
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Docker
+docker-compose.override.yml
+docker-compose.override.yml
+
+# Visual Studio cache
+.vs/
+.vsconfig
+
+# dotnet tool temporary files
+.dotnet/
+.project.lock.json
+project.lock.json
+artifacts/
+
+# Coverage files
+coverage/
+*.coverage
+*.coveragexml
+
+# Others
+*.cache
+*.tmp
+*.bak
+*.backup
+*.old
+*.rej
+
+# Ignore AddressBook API output
+AddressBook.API/bin/
+AddressBook.API/obj/
+
+# Ignore Infrastructure output if any
+AddressBook.Infrastructure/bin/
+AddressBook.Infrastructure/obj/
+
+# Ignore Application output if any
+AddressBook.Application/bin/
+AddressBook.Application/obj/
+
+# Ignore Domain output if any
+AddressBook.Domain/bin/
+AddressBook.Domain/obj/

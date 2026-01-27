@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ AddressBook.Domain  \AddressBook.Domain.csproj" />
+      <ProjectReference Include="..\AddressBook.Application\AddressBook.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
+        <PackageReference Include="PetaPoco" Version="5.1.304" />
+        <PackageReference Include="PetaPoco.Compiled" Version="6.0.684-beta" />
+    </ItemGroup>
+
+</Project>
