@@ -8,7 +8,7 @@ namespace AddressBook.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ContactsController : ControllerBase
+    public class ContactsController : BaseApiController
     {
         private readonly IContactRepository _repository;
         private readonly IMapper _mapper;
@@ -27,18 +27,18 @@ namespace AddressBook.API.Controllers
         {
             var contacts = await _repository.GetAllAsync();
             var result = _mapper.Map<IEnumerable<ContactResponseDto>>(contacts);
-            return Ok(result);
+            return Success(result);
         }
 
         // GET: api/contacts/{id}
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var contact = await _repository.GetByIdAsync(id);
-            if (contact == null)
-                return NotFound();
+            if (contact == null) return Failure("Contact not found", 404);
 
-            return Ok(_mapper.Map<ContactResponseDto>(contact));
+            var result = _mapper.Map<ContactResponseDto>(contact);
+            return Success(result);
         }
 
         // POST: api/contacts
@@ -48,37 +48,40 @@ namespace AddressBook.API.Controllers
             var contact = _mapper.Map<Contacts>(dto);
             var id = await _repository.AddAsync(contact);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id },
-                new { id });
+            var createdContact = await _repository.GetByIdAsync(id);
+            var result = _mapper.Map<ContactResponseDto>(createdContact);
+
+            return Success(result, 201); // 201 Created
         }
 
         // PUT: api/contacts/{id}
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateContactDto dto)
         {
-            if (id != dto.Id)
-                return BadRequest("ID mismatch");
+            if (id != dto.Id) return Failure("ID mismatch", 400);
 
             var contact = _mapper.Map<Contacts>(dto);
             var updated = await _repository.UpdateAsync(contact);
 
-            if (!updated)
-                return NotFound();
+            if (!updated) return Failure("Contact not found", 404);
 
-            return NoContent();
+            var updatedContact = await _repository.GetByIdAsync(id);
+            var result = _mapper.Map<ContactResponseDto>(updatedContact);
+
+            return Success(result);
         }
 
         // DELETE: api/contacts/{id}
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _repository.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
+            var contact = await _repository.GetByIdAsync(id);
+            if (contact == null) return Failure("Contact not found", 404);
 
-            return NoContent();
+            var deleted = await _repository.DeleteAsync(id);
+            if (!deleted) return Failure("Could not delete contact", 500);
+
+            return Success(_mapper.Map<ContactResponseDto>(contact));
         }
     }
 }
