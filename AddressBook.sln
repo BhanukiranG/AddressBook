@@ -1,6 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook", "AddressBook\AddressBook.csproj", "{084167ED-16C1-4E31-A1CB-AF3BCD3FE07E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook.API", "AddressBook.API\AddressBook.API.csproj", "{084167ED-16C1-4E31-A1CB-AF3BCD3FE07E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook.Application", "AddressBook.Application\AddressBook.Application.csproj", "{57522C02-5E37-4818-8D59-57AED3AF161B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook.Domain", " AddressBook.Domain  \AddressBook.Domain.csproj", "{9F7E23FB-5087-479C-A76C-A5DDDCDECB18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressBook.Infrastructure", "AddressBook.Infrastructure\AddressBook.Infrastructure.csproj", "{F9FB2BC7-88AD-4709-9562-3D59F5E1FD5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +18,17 @@ Global
 		{084167ED-16C1-4E31-A1CB-AF3BCD3FE07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{084167ED-16C1-4E31-A1CB-AF3BCD3FE07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{084167ED-16C1-4E31-A1CB-AF3BCD3FE07E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57522C02-5E37-4818-8D59-57AED3AF161B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57522C02-5E37-4818-8D59-57AED3AF161B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57522C02-5E37-4818-8D59-57AED3AF161B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57522C02-5E37-4818-8D59-57AED3AF161B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F7E23FB-5087-479C-A76C-A5DDDCDECB18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F7E23FB-5087-479C-A76C-A5DDDCDECB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F7E23FB-5087-479C-A76C-A5DDDCDECB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F7E23FB-5087-479C-A76C-A5DDDCDECB18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9FB2BC7-88AD-4709-9562-3D59F5E1FD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9FB2BC7-88AD-4709-9562-3D59F5E1FD5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9FB2BC7-88AD-4709-9562-3D59F5E1FD5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9FB2BC7-88AD-4709-9562-3D59F5E1FD5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
