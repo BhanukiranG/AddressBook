@@ -51,7 +51,7 @@ namespace AddressBook.API.Controllers
             var createdContact = await _repository.GetByIdAsync(id);
             var result = _mapper.Map<ContactResponseDto>(createdContact);
 
-            return Success(result, 201); // 201 Created
+            return Success(result, 201);
         }
 
         // PUT: api/contacts/{id}
