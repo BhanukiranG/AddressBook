@@ -61,12 +61,18 @@ namespace AddressBook.API.Controllers
             var contact = await _repository.GetByIdAsync(id);
             if (contact == null) return Failure("Contact not found", 404);
 
+            if (dto.Name != null && string.IsNullOrWhiteSpace(dto.Name)) return Failure("Name cannot be empty");
+            if (dto.Email != null && !dto.Email.Contains('@')) return Failure("Invalid email address");
+            if (dto.Phone is { Length: < 5 }) return Failure("Invalid phone number");
+
+            if (dto.Name != null) contact.Name = dto.Name;
+            if (dto.Email != null) contact.Email = dto.Email;
+            if (dto.Phone != null) contact.Phone = dto.Phone;
+
             var updated = await _repository.UpdateAsync(contact);
-            if (!updated) return Failure("Contact not found", 404);
+            if (!updated) return Failure("Could not update contact", 500);
 
-            var updatedContact = await _repository.GetByIdAsync(id);
-            var result = _mapper.Map<ContactResponseDto>(updatedContact);
-
+            var result = _mapper.Map<ContactResponseDto>(contact);
             return Success(result);
         }
 
