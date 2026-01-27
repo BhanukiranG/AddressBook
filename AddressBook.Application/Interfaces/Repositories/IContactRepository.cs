@@ -4,13 +4,13 @@ namespace AddressBook.Application.Interfaces.Repositories
 {
     public interface IContactRepository
     {
-        Task<int> AddAsync(Contact contact);
+        Task<int> AddAsync(Contacts contacts);
 
-        Task<IEnumerable<Contact>> GetAllAsync();
+        Task<IEnumerable<Contacts>> GetAllAsync();
 
-        Task<Contact?> GetByIdAsync(int id);
+        Task<Contacts?> GetByIdAsync(int id);
 
-        Task<bool> UpdateAsync(Contact contact);
+        Task<bool> UpdateAsync(Contacts contacts);
 
         Task<bool> DeleteAsync(int id);
     }

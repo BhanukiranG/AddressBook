@@ -8,9 +8,9 @@ namespace AddressBook.Application.Mapping
     {
         public ContactProfile()
         {
-            CreateMap<CreateContactDto, Contact>();
-            CreateMap<UpdateContactDto, Contact>();
-            CreateMap<Contact, ContactResponseDto>();
+            CreateMap<CreateContactDto, Contacts>();
+            CreateMap<UpdateContactDto, Contacts>();
+            CreateMap<Contacts, ContactResponseDto>();
         }
     }
 }

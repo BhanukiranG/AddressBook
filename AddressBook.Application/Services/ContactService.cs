@@ -19,7 +19,7 @@ namespace AddressBook.Application.Services
 
         public async Task<int> CreateAsync(CreateContactDto dto)
         {
-            var entity = _mapper.Map<Contact>(dto);
+            var entity = _mapper.Map<Contacts>(dto);
             return await _repository.AddAsync(entity);
         }
 
@@ -37,7 +37,7 @@ namespace AddressBook.Application.Services
 
         public async Task<bool> UpdateAsync(UpdateContactDto dto)
         {
-            var entity = _mapper.Map<Contact>(dto);
+            var entity = _mapper.Map<Contacts>(dto);
             return await _repository.UpdateAsync(entity);
         }
 

@@ -45,7 +45,7 @@ namespace AddressBook.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateContactDto dto)
         {
-            var contact = _mapper.Map<Contact>(dto);
+            var contact = _mapper.Map<Contacts>(dto);
             var id = await _repository.AddAsync(contact);
 
             return CreatedAtAction(
@@ -61,7 +61,7 @@ namespace AddressBook.API.Controllers
             if (id != dto.Id)
                 return BadRequest("ID mismatch");
 
-            var contact = _mapper.Map<Contact>(dto);
+            var contact = _mapper.Map<Contacts>(dto);
             var updated = await _repository.UpdateAsync(contact);
 
             if (!updated)

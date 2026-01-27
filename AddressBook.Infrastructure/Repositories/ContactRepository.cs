@@ -13,31 +13,38 @@ namespace AddressBook.Infrastructure.Repositories
             _database = database;
         }
 
-        public Task<int> AddAsync(Contact contact)
+        public Task<int> AddAsync(Contacts contacts)
         {
-            contact.CreatedAt = DateTime.UtcNow;
-            var id = (int)_database.Insert(contact);
+            contacts.CreatedAt = DateTime.UtcNow;
+            var id = (int)_database.Insert(contacts);
             return Task.FromResult(id);
         }
 
-        public Task<IEnumerable<Contact>> GetAllAsync()
+        public Task<IEnumerable<Contacts>> GetAllAsync()
         {
-            var result = _database.Fetch<Contact>("SELECT * FROM Contacts");
+            var result = _database.Fetch<Contacts>("SELECT * FROM Contacts");
             return Task.FromResult(result.AsEnumerable());
         }
 
-        public Task<Contact?> GetByIdAsync(int id)
+        public Task<Contacts?> GetByIdAsync(int id)
         {
-            var contact = _database.SingleOrDefault<Contact>(
+            var contact = _database.SingleOrDefault<Contacts>(
                 "SELECT * FROM Contacts WHERE Id=@0", id);
             return Task.FromResult(contact);
         }
 
-        public Task<bool> UpdateAsync(Contact contact)
+        public async Task<bool> UpdateAsync(Contacts contacts)
         {
-            contact.UpdatedAt = DateTime.UtcNow;
-            var rows = _database.Update(contact);
-            return Task.FromResult(rows > 0);
+            var existing = _database.SingleOrDefault<Contacts>(contacts.Id);
+            if (existing == null) return false;
+
+            existing.Name = contacts.Name;
+            existing.Email = contacts.Email;
+            existing.Phone = contacts.Phone;
+            existing.UpdatedAt = DateTime.UtcNow;
+
+            var rows = _database.Update(existing);
+            return rows > 0;
         }
 
         public Task<bool> DeleteAsync(int id)
