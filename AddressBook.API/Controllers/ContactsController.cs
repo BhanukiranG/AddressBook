@@ -8,25 +8,14 @@ namespace AddressBook.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ContactsController : BaseApiController
+    public class ContactsController(IContactRepository repository, IMapper mapper) : BaseApiController 
     {
-        private readonly IContactRepository _repository;
-        private readonly IMapper _mapper;
-
-        public ContactsController(
-            IContactRepository repository,
-            IMapper mapper)
-        {
-            _repository = repository;
-            _mapper = mapper;
-        }
-
         // GET: api/contacts
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var contacts = await _repository.GetAllAsync();
-            var result = _mapper.Map<IEnumerable<ContactResponseDto>>(contacts);
+            var contacts = await repository.GetAllAsync();
+            var result = mapper.Map<IEnumerable<ContactResponseDto>>(contacts);
             return Success(result);
         }
 
@@ -34,10 +23,10 @@ namespace AddressBook.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var contact = await _repository.GetByIdAsync(id);
+            var contact = await repository.GetByIdAsync(id);
             if (contact == null) return Failure("Contact not found", 404);
 
-            var result = _mapper.Map<ContactResponseDto>(contact);
+            var result = mapper.Map<ContactResponseDto>(contact);
             return Success(result);
         }
 
@@ -45,11 +34,11 @@ namespace AddressBook.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateContactDto dto)
         {
-            var contact = _mapper.Map<Contacts>(dto);
-            var id = await _repository.AddAsync(contact);
+            var contact = mapper.Map<Contacts>(dto);
+            var id = await repository.AddAsync(contact);
 
-            var createdContact = await _repository.GetByIdAsync(id);
-            var result = _mapper.Map<ContactResponseDto>(createdContact);
+            var createdContact = await repository.GetByIdAsync(id);
+            var result = mapper.Map<ContactResponseDto>(createdContact);
 
             return Success(result, 201);
         }
@@ -58,7 +47,7 @@ namespace AddressBook.API.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateContactDto dto)
         {
-            var contact = await _repository.GetByIdAsync(id);
+            var contact = await repository.GetByIdAsync(id);
             if (contact == null) return Failure("Contact not found", 404);
 
             if (dto.Name != null && string.IsNullOrWhiteSpace(dto.Name)) return Failure("Name cannot be empty");
@@ -69,10 +58,10 @@ namespace AddressBook.API.Controllers
             if (dto.Email != null) contact.Email = dto.Email;
             if (dto.Phone != null) contact.Phone = dto.Phone;
 
-            var updated = await _repository.UpdateAsync(contact);
+            var updated = await repository.UpdateAsync(contact);
             if (!updated) return Failure("Could not update contact", 500);
 
-            var result = _mapper.Map<ContactResponseDto>(contact);
+            var result = mapper.Map<ContactResponseDto>(contact);
             return Success(result);
         }
 
@@ -80,13 +69,13 @@ namespace AddressBook.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var contact = await _repository.GetByIdAsync(id);
+            var contact = await repository.GetByIdAsync(id);
             if (contact == null) return Failure("Contact not found", 404);
 
-            var deleted = await _repository.DeleteAsync(id);
+            var deleted = await repository.DeleteAsync(id);
             if (!deleted) return Failure("Could not delete contact", 500);
 
-            return Success(_mapper.Map<ContactResponseDto>(contact));
+            return Success(mapper.Map<ContactResponseDto>(contact));
         }
     }
 }
