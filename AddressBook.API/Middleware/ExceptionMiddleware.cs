@@ -1,39 +1,34 @@
-namespace AddressBook.API.Middleware;
-
-using Application.DTOs;
+using AddressBook.Application.DTOs;
 using System.Net;
 using System.Text.Json;
 
-public class ExceptionMiddleware
+namespace AddressBook.API.Middleware
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
+    public class ExceptionMiddleware(RequestDelegate next)
     {
-        _next = next;
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        try
+        public async Task InvokeAsync(HttpContext context)
         {
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-            var response = new ApiErrorResponse
+            try
             {
-                Message = "Internal Server Error",
-                Successful = false
-            };
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
 
-            var json = JsonSerializer.Serialize(response);
-            await context.Response.WriteAsync(json);
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                var response = new ApiResponse<object>
+                {
+                    Data = null,
+                    Successful = false,
+                    Message = "Internal Server Error"
+                };
+
+                var json = JsonSerializer.Serialize(response);
+                await context.Response.WriteAsync(json);
+            }
         }
     }
 }

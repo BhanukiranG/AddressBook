@@ -19,10 +19,9 @@ namespace AddressBook.Infrastructure.Configurations
 
         public IDatabase GetDatabase()
         {
-            // Use the provider name as Microsoft.Data.SqlClient
             return new Database(
                 _connectionString,
-                "Microsoft.Data.SqlClient" // <-- this ensures PetaPoco can find the provider
+                "Microsoft.Data.SqlClient"
             );
         }
     }
