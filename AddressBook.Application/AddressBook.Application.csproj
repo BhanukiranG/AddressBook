@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ AddressBook.Domain  \AddressBook.Domain.csproj" />
+        <ProjectReference Include="..\ AddressBook.Domain  \AddressBook.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="12.0.1" />
-      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="AutoMapper" Version="12.0.1"/>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
     </ItemGroup>
 
 </Project>

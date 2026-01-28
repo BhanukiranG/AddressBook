@@ -15,13 +15,13 @@ namespace AddressBook.Infrastructure.Repositories
 
         public Task<IEnumerable<Contacts>> GetAllAsync()
         {
-            var result  = database.Fetch<Contacts>("SELECT * FROM Contacts");
+            var result = database.Fetch<Contacts>("SELECT * FROM Contacts");
             return Task.FromResult(result.AsEnumerable());
         }
 
         public Task<Contacts?> GetByIdAsync(int id)
         {
-            var contact = (Contacts?) database.SingleOrDefault<Contacts>(id);
+            var contact = (Contacts?)database.SingleOrDefault<Contacts>(id);
             return Task.FromResult(contact);
         }
 

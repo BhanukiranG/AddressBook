@@ -1,9 +1,10 @@
 using AddressBook.API.Middleware;
-using AddressBook.Application.Interfaces.Services;
-using AddressBook.Application.Services;
 using AddressBook.Application.Interfaces.Repositories;
-using AddressBook.Infrastructure.Repositories;
+using AddressBook.Application.Interfaces.Services;
+using AddressBook.Application.Mapping;
+using AddressBook.Application.Services;
 using AddressBook.Infrastructure.Configurations;
+using AddressBook.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using PetaPoco;
 
@@ -36,7 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // AutoMapper
-builder.Services.AddAutoMapper(typeof(AddressBook.Application.Mapping.ContactProfile));
+builder.Services.AddAutoMapper(typeof(ContactProfile));
 
 // DI Setup
 builder.Services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
