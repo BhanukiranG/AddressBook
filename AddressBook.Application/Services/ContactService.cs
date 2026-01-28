@@ -23,12 +23,20 @@ namespace AddressBook.Application.Services
         public async Task<ContactResponseDto?> GetByIdAsync(int id)
         {
             var entity = await repository.GetByIdAsync(id);
-            return mapper.Map<ContactResponseDto?>(entity);
+            return entity == null
+                ? null
+                : mapper.Map<ContactResponseDto>(entity);
         }
 
         public async Task<bool> UpdateAsync(UpdateContactDto dto)
         {
-            var entity = mapper.Map<Contacts>(dto);
+            var entity = await repository.GetByIdAsync(dto.Id);
+            if (entity == null) return false;
+
+            if (dto.Name != null) entity.Name = dto.Name;
+            if (dto.Email != null) entity.Email = dto.Email;
+            if (dto.Phone != null) entity.Phone = dto.Phone;
+
             return await repository.UpdateAsync(entity);
         }
 
