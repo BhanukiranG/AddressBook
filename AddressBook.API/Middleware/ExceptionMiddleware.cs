@@ -15,20 +15,20 @@ namespace AddressBook.API.Middleware
             }
             catch (NotFoundException ex)
             {
-                await WriteError(context, ex.Message, HttpStatusCode.NotFound);
+                await WriteErrorResponseAsync(context, ex.Message, HttpStatusCode.NotFound);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
 
-                await WriteError(
+                await WriteErrorResponseAsync(
                     context,
                     "Internal Server Error",
                     HttpStatusCode.InternalServerError);
             }
         }
 
-        static private async Task WriteError(
+        static private async Task WriteErrorResponseAsync(
             HttpContext context,
             string message,
             HttpStatusCode statusCode)
