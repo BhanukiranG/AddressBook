@@ -13,7 +13,7 @@ namespace AddressBook.Application.Mapping
             CreateMap<Contacts, ContactResponseDto>();
             CreateMap<UpdateContactDto, Contacts>()
                 .ForAllMembers(opt =>
-                    opt.Condition((src, dest, srcMember) => srcMember != null));
+                    opt.Condition((_, _, srcMember) => srcMember != null));
         }
     }
 }

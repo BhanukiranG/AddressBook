@@ -9,42 +9,42 @@ namespace AddressBook.Application.Services
 {
     public class ContactService(IContactRepository repository, IMapper mapper) : IContactService
     {
-        public async Task<int> CreateAsync(CreateContactDto dto)
+        public async Task<int> CreateContactAsync(CreateContactDto dto)
         {
             var entity = mapper.Map<Contacts>(dto);
-            return await repository.AddAsync(entity);
+            return await repository.AddContactAsync(entity);
         }
 
-        public async Task<IEnumerable<ContactResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<ContactResponseDto>> GetContactsAsync()
         {
-            var entities = await repository.GetAllAsync();
+            var entities = await repository.GetContactsAsync();
             return mapper.Map<IEnumerable<ContactResponseDto>>(entities);
         }
 
-        public async Task<ContactResponseDto?> GetByIdAsync(int id)
+        public async Task<ContactResponseDto?> GetContactAsync(int id)
         {
-            var entity = await repository.GetByIdAsync(id);
+            var entity = await repository.GetContactAsync(id);
 
             return entity is null
                 ? throw new NotFoundException("Contact not found")
                 : mapper.Map<ContactResponseDto>(entity);
         }
 
-        public async Task<bool> UpdateAsync(UpdateContactDto dto)
+        public async Task<bool> UpdateContactAsync(UpdateContactDto dto)
         {
-            var entity = await repository.GetByIdAsync(dto.Id);
+            var entity = await repository.GetContactAsync(dto.Id);
 
             if (entity is null)
                 throw new NotFoundException("Contact not found");
 
             mapper.Map(dto, entity);
 
-            return await repository.UpdateAsync(entity);
+            return await repository.UpdateContactAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteContactAsync(int id)
         {
-            var deleted = await repository.DeleteAsync(id);
+            var deleted = await repository.DeleteContactAsync(id);
 
             return !deleted
                 ? throw new NotFoundException("Contact not found")

@@ -11,32 +11,32 @@ namespace AddressBook.API.Controllers
         [HttpGet]
         public async Task<IEnumerable<ContactResponseDto>> GetContacts()
         {
-            return await contactService.GetAllAsync();
+            return await contactService.GetContactsAsync();
         }
 
         [HttpGet("{id:int}")]
         public async Task<ContactResponseDto?> GetContact(int id)
         {
-            return await contactService.GetByIdAsync(id);
+            return await contactService.GetContactAsync(id);
         }
 
         [HttpPost]
         public async Task<int> CreateContact(CreateContactDto dto)
         {
-            return await contactService.CreateAsync(dto);
+            return await contactService.CreateContactAsync(dto);
         }
 
         [HttpPatch("{id:int}")]
         public async Task<bool> UpdateContact(int id, UpdateContactDto dto)
         {
             dto.Id = id;
-            return await contactService.UpdateAsync(dto);
+            return await contactService.UpdateContactAsync(dto);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<bool> DeleteContact(int id)
         {
-            return await contactService.DeleteAsync(id);
+            return await contactService.DeleteContactAsync(id);
         }
     }
 }
