@@ -1,3 +1,4 @@
+using AddressBook.Application.Common.Exceptions;
 using AddressBook.Application.DTOs;
 using System.Net;
 using System.Text.Json;
@@ -12,23 +13,37 @@ namespace AddressBook.API.Middleware
             {
                 await next(context);
             }
+            catch (NotFoundException ex)
+            {
+                await WriteError(context, ex.Message, HttpStatusCode.NotFound);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                var response = new ApiResponse<object>
-                {
-                    Data = null,
-                    Successful = false,
-                    Message = "Internal Server Error"
-                };
-
-                var json = JsonSerializer.Serialize(response);
-                await context.Response.WriteAsync(json);
+                await WriteError(
+                    context,
+                    "Internal Server Error",
+                    HttpStatusCode.InternalServerError);
             }
+        }
+
+        static private async Task WriteError(
+            HttpContext context,
+            string message,
+            HttpStatusCode statusCode)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)statusCode;
+
+            var response = new ApiResponse<object>
+            {
+                Successful = false,
+                Message = message
+            };
+
+            var json = JsonSerializer.Serialize(response);
+            await context.Response.WriteAsync(json);
         }
     }
 }

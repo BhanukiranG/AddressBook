@@ -1,8 +1,9 @@
-using AutoMapper;
+using AddressBook.Application.Common.Exceptions;
 using AddressBook.Application.DTOs.Contact;
 using AddressBook.Application.Interfaces.Repositories;
 using AddressBook.Application.Interfaces.Services;
 using AddressBook.Domain.Entities;
+using AutoMapper;
 
 namespace AddressBook.Application.Services
 {
@@ -23,26 +24,31 @@ namespace AddressBook.Application.Services
         public async Task<ContactResponseDto?> GetByIdAsync(int id)
         {
             var entity = await repository.GetByIdAsync(id);
-            return entity == null
-                ? null
+
+            return entity is null
+                ? throw new NotFoundException("Contact not found")
                 : mapper.Map<ContactResponseDto>(entity);
         }
 
         public async Task<bool> UpdateAsync(UpdateContactDto dto)
         {
             var entity = await repository.GetByIdAsync(dto.Id);
-            if (entity == null) return false;
 
-            if (dto.Name != null) entity.Name = dto.Name;
-            if (dto.Email != null) entity.Email = dto.Email;
-            if (dto.Phone != null) entity.Phone = dto.Phone;
+            if (entity is null)
+                throw new NotFoundException("Contact not found");
+
+            mapper.Map(dto, entity);
 
             return await repository.UpdateAsync(entity);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            return await repository.DeleteAsync(id);
+            var deleted = await repository.DeleteAsync(id);
+
+            return !deleted
+                ? throw new NotFoundException("Contact not found")
+                : true;
         }
     }
 }

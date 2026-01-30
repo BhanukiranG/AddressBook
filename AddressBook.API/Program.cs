@@ -1,3 +1,4 @@
+using AddressBook.API.Filters;
 using AddressBook.API.Middleware;
 using AddressBook.Application.Interfaces.Repositories;
 using AddressBook.Application.Interfaces.Services;
@@ -10,7 +11,7 @@ using PetaPoco;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => { options.Filters.Add<ApiResponseWrapperFilter>(); });
 
 // Validation config
 builder.Services.Configure<ApiBehaviorOptions>(options =>
