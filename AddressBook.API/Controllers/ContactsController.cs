@@ -1,12 +1,14 @@
 using AddressBook.Application.DTOs;
 using AddressBook.Application.DTOs.Contact;
 using AddressBook.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddressBook.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ContactsController(IContactService service) : BaseApiController
     {
         // GET: api/contacts

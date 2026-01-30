@@ -14,20 +14,20 @@ namespace AddressBook.API.Middleware
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-
+                context.Response.StatusCode = 500;
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var response = new ApiResponse<object>
+                var response = new
                 {
-                    Data = null,
                     Successful = false,
-                    Message = "Internal Server Error"
+                    Message = context.RequestServices
+                        .GetRequiredService<IWebHostEnvironment>()
+                        .IsDevelopment()
+                        ? ex.Message
+                        : "Internal Server Error"
                 };
 
-                var json = JsonSerializer.Serialize(response);
-                await context.Response.WriteAsync(json);
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
     }
