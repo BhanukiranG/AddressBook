@@ -44,6 +44,7 @@ builder.Services.AddSwaggerGen();
 // Scans the mapping profile in the Application layer
 builder.Services.AddAutoMapper(typeof(ContactProfile));
 
+// PetaPoco Database registration
 builder.Services.AddScoped<IDatabase>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
