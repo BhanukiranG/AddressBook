@@ -1,48 +1,54 @@
-using AutoMapper;
+using AddressBook.Application.Common.Exceptions;
 using AddressBook.Application.DTOs.Contact;
 using AddressBook.Application.Interfaces.Repositories;
 using AddressBook.Application.Interfaces.Services;
 using AddressBook.Domain.Entities;
+using AutoMapper;
 
 namespace AddressBook.Application.Services
 {
     public class ContactService(IContactRepository repository, IMapper mapper) : IContactService
     {
-        public async Task<int> CreateAsync(CreateContactDto dto)
+        public async Task<int> CreateContactAsync(CreateContactDto dto)
         {
             var entity = mapper.Map<Contacts>(dto);
-            return await repository.AddAsync(entity);
+            return await repository.AddContactAsync(entity);
         }
 
-        public async Task<IEnumerable<ContactResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<ContactResponseDto>> GetContactsAsync()
         {
-            var entities = await repository.GetAllAsync();
+            var entities = await repository.GetContactsAsync();
             return mapper.Map<IEnumerable<ContactResponseDto>>(entities);
         }
 
-        public async Task<ContactResponseDto?> GetByIdAsync(int id)
+        public async Task<ContactResponseDto?> GetContactAsync(int id)
         {
-            var entity = await repository.GetByIdAsync(id);
-            return entity == null
-                ? null
+            var entity = await repository.GetContactAsync(id);
+
+            return entity is null
+                ? throw new NotFoundException("Contact not found")
                 : mapper.Map<ContactResponseDto>(entity);
         }
 
-        public async Task<bool> UpdateAsync(UpdateContactDto dto)
+        public async Task<bool> UpdateContactAsync(UpdateContactDto dto)
         {
-            var entity = await repository.GetByIdAsync(dto.Id);
-            if (entity == null) return false;
+            var entity = await repository.GetContactAsync(dto.Id);
 
-            if (dto.Name != null) entity.Name = dto.Name;
-            if (dto.Email != null) entity.Email = dto.Email;
-            if (dto.Phone != null) entity.Phone = dto.Phone;
+            if (entity is null)
+                throw new NotFoundException("Contact not found");
 
-            return await repository.UpdateAsync(entity);
+            mapper.Map(dto, entity);
+
+            return await repository.UpdateContactAsync(entity);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteContactAsync(int id)
         {
-            return await repository.DeleteAsync(id);
+            var deleted = await repository.DeleteContactAsync(id);
+
+            return !deleted
+                ? throw new NotFoundException("Contact not found")
+                : true;
         }
     }
 }

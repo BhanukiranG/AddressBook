@@ -6,43 +6,41 @@ namespace AddressBook.Infrastructure.Repositories
 {
     public class ContactRepository(IDatabase database) : IContactRepository
     {
-        public Task<int> AddAsync(Contacts contacts)
+        public async Task<int> AddContactAsync(Contacts contacts)
         {
             contacts.CreatedAt = DateTime.UtcNow;
-            var id = (int)database.Insert(contacts);
-            return Task.FromResult(id);
+            var id = await database.InsertAsync(contacts);
+            return Convert.ToInt32(id);
         }
 
-        public Task<IEnumerable<Contacts>> GetAllAsync()
+        public async Task<IEnumerable<Contacts>> GetContactsAsync()
         {
-            var result = database.Fetch<Contacts>("SELECT * FROM Contacts");
-            return Task.FromResult(result.AsEnumerable());
+            return await database.FetchAsync<Contacts>("SELECT * FROM Contacts");
         }
 
-        public Task<Contacts?> GetByIdAsync(int id)
+        public async Task<Contacts?> GetContactAsync(int id)
         {
-            var contact = (Contacts?)database.SingleOrDefault<Contacts>(id);
-            return Task.FromResult(contact);
+            return await database.SingleOrDefaultAsync<Contacts>(id);
         }
 
-        public Task<bool> UpdateAsync(Contacts contacts)
+        public async Task<bool> UpdateContactAsync(Contacts contacts)
         {
-            var existingContact = database.SingleOrDefault<Contacts>(contacts.Id);
-            if (existingContact == null) return Task.FromResult(false);
+            var existingContact = await database.SingleOrDefaultAsync<Contacts>(contacts.Id);
+            if (existingContact == null) return false;
 
             if (!string.IsNullOrWhiteSpace(contacts.Name)) existingContact.Name = contacts.Name;
             if (!string.IsNullOrWhiteSpace(contacts.Email)) existingContact.Email = contacts.Email;
             if (!string.IsNullOrWhiteSpace(contacts.Phone)) existingContact.Phone = contacts.Phone;
             existingContact.UpdatedAt = DateTime.UtcNow;
 
-            var affectedRows = database.Update(existingContact);
-            return Task.FromResult(affectedRows > 0);
+            var affectedRows = await database.UpdateAsync(existingContact);
+            return affectedRows > 0;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteContactAsync(int id)
         {
-            int affectedRows = database.Delete<Contacts>(id);
-            return Task.FromResult(affectedRows > 0);
+            var affectedRows = await database.DeleteAsync<Contacts>(id);
+            return affectedRows > 0;
         }
     }
 }

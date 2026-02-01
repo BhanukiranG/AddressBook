@@ -1,4 +1,3 @@
-using AddressBook.Application.DTOs;
 using AddressBook.Application.DTOs.Contact;
 using AddressBook.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,54 +8,37 @@ namespace AddressBook.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class ContactsController(IContactService service) : BaseApiController
+    public class ContactsController(IContactService contactService) : ControllerBase
     {
-        // GET: api/contacts
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ContactResponseDto>>>> GetAll()
+        public async Task<IEnumerable<ContactResponseDto>> GetContacts()
         {
-            var result = await service.GetAllAsync();
-            return Success(result);
+            return await contactService.GetContactsAsync();
         }
 
-        // GET: api/contacts/{id}
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ApiResponse<ContactResponseDto>>> Get(int id)
+        public async Task<ContactResponseDto?> GetContact(int id)
         {
-            var result = await service.GetByIdAsync(id);
-            return result is null
-                ? Failure<ContactResponseDto>("Contact not found", 404)
-                : Success(result);
+            return await contactService.GetContactAsync(id);
         }
 
-        // POST: api/contacts
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<ContactResponseDto?>>> Create(CreateContactDto dto)
+        public async Task<int> CreateContact(CreateContactDto dto)
         {
-            var id = await service.CreateAsync(dto);
-            var result = await service.GetByIdAsync(id);
-            return Success(result, 201);
+            return await contactService.CreateContactAsync(dto);
         }
 
-        // PUT: api/contacts/{id}
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<ApiResponse<string>>> Update(int id, UpdateContactDto dto)
+        [HttpPatch("{id:int}")]
+        public async Task<bool> UpdateContact(int id, UpdateContactDto dto)
         {
             dto.Id = id;
-            var updated = await service.UpdateAsync(dto);
-            return updated
-                ? Success("Contact updated successfully")
-                : Failure<string>("Contact not found", 404);
+            return await contactService.UpdateContactAsync(dto);
         }
 
-        // DELETE: api/contacts/{id}
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(int id)
+        public async Task<bool> DeleteContact(int id)
         {
-            var deleted = await service.DeleteAsync(id);
-            return deleted
-                ? Success("Contact deleted successfully")
-                : Failure<string>("Contact not found", 404);
+            return await contactService.DeleteContactAsync(id);
         }
     }
 }
