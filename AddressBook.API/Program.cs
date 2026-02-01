@@ -1,69 +1,84 @@
+using AddressBook.API.Extensions;
 using AddressBook.API.Filters;
 using AddressBook.API.Middleware;
 using AddressBook.Application.Interfaces.Repositories;
 using AddressBook.Application.Interfaces.Services;
 using AddressBook.Application.Mapping;
 using AddressBook.Application.Services;
+using AddressBook.Application.Validators.Contact;
 using AddressBook.Infrastructure.Configurations;
 using AddressBook.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using PetaPoco;
 
+// Create the WebApplicationBuilder
+// This initializes configuration, logging, and dependency injection
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(options => { options.Filters.Add<ApiResponseWrapperFilter>(); });
-
-// Validation config
-builder.Services.Configure<ApiBehaviorOptions>(options =>
+// Add controllers and global API response wrapper filter
+builder.Services.AddControllers(options =>
 {
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errors = context.ModelState
-            .Where(x => x.Value is { Errors.Count: > 0 })
-            .ToDictionary(
-                kvp => kvp.Key,
-                kvp => kvp.Value!.Errors!.Select(e => e.ErrorMessage).ToArray()
-            );
-
-        return new BadRequestObjectResult(new
-        {
-            Message = "Validation failed",
-            Successful = false,
-            Errors = errors
-        });
-    };
+    // Wrap all responses in ApiResponse format
+    options.Filters.Add<ApiResponseWrapperFilter>();
 });
 
+// Configure custom API behavior for model validation errors
+// Returns a consistent ApiResponse object instead of default errors
+builder.Services.AddCustomApiBehavior();
+
+// Enables automatic validation of incoming DTOs
+builder.Services.AddFluentValidationAutoValidation();
+
+// Enables client-side adapters (optional for frontend JS validation)
+builder.Services.AddFluentValidationClientsideAdapters();
+
+// Scan the assembly containing the validator and register them
+builder.Services.AddValidatorsFromAssemblyContaining<CreateContactDtoValidator>();
+
+// Swagger/OpenAPI configuration
+// Generates API documentation automatically
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// AutoMapper
+// AutoMapper configuration
+// Scans the mapping profile in the Application layer
 builder.Services.AddAutoMapper(typeof(ContactProfile));
 
-// DI Setup
+// Database factory - singleton because connection string and factory are shared
 builder.Services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
+
+// Scoped database instance per HTTP request
 builder.Services.AddScoped<IDatabase>(provider =>
 {
     var factory = provider.GetRequiredService<IDatabaseFactory>();
     return factory.GetDatabase();
 });
 
+// Repository and Service registration
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddScoped<IContactService, ContactService>();
 
+// Build the WebApplication
 var app = builder.Build();
 
-// Middleware
+// Enable Swagger only in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-// Exception middleware
+// Global exception handling middleware
 app.UseMiddleware<ExceptionMiddleware>();
+
+// Redirect HTTP requests to HTTPS
+app.UseHttpsRedirection();
+
+// Authorization middleware
+app.UseAuthorization();
+
+// Map controllers
 app.MapControllers();
 
 app.Run();
