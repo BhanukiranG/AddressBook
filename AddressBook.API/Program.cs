@@ -6,7 +6,6 @@ using AddressBook.Application.Interfaces.Services;
 using AddressBook.Application.Mapping;
 using AddressBook.Application.Services;
 using AddressBook.Application.Validators.Contact;
-using AddressBook.Infrastructure.Configurations;
 using AddressBook.Infrastructure.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -45,14 +44,11 @@ builder.Services.AddSwaggerGen();
 // Scans the mapping profile in the Application layer
 builder.Services.AddAutoMapper(typeof(ContactProfile));
 
-// Database factory - singleton because connection string and factory are shared
-builder.Services.AddSingleton<IDatabaseFactory, DatabaseFactory>();
-
-// Scoped database instance per HTTP request
 builder.Services.AddScoped<IDatabase>(provider =>
 {
-    var factory = provider.GetRequiredService<IDatabaseFactory>();
-    return factory.GetDatabase();
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new Database(connectionString, "Microsoft.Data.SqlClient");
 });
 
 // Repository and Service registration
