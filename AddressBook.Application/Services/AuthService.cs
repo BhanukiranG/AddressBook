@@ -10,7 +10,7 @@ namespace AddressBook.Application.Services
     {
         public async Task<AuthResult> RegisterAsync(RegisterDto dto)
         {
-            var existingUser = await userRepository.GetByEmailAsync(dto.Email);
+            var existingUser = await userRepository.GetUserByEmailAsync(dto.Email);
             if (existingUser != null)
                 return new AuthResult
                 {
@@ -28,7 +28,7 @@ namespace AddressBook.Application.Services
                 Role = "User"
             };
 
-            await userRepository.AddAsync(user);
+            await userRepository.AddUserAsync(user);
 
             var token = jwt.GenerateToken(user.Id, user.Email, user.Role);
 
@@ -41,7 +41,7 @@ namespace AddressBook.Application.Services
 
         public async Task<AuthResult> LoginAsync(LoginDto dto)
         {
-            var user = await userRepository.GetByEmailAsync(dto.Email);
+            var user = await userRepository.GetUserByEmailAsync(dto.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 return new AuthResult
                 {

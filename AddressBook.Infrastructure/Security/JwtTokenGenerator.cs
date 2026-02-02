@@ -25,11 +25,13 @@ namespace AddressBook.Infrastructure.Security
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expiryMinutes = int.Parse(configuration["Jwt:ExpiryMinutes"] ?? "120");
+            
             var token = new JwtSecurityToken(
                 configuration["Jwt:Issuer"],
                 configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddMinutes(expiryMinutes),
                 signingCredentials: creds
             );
 

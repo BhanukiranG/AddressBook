@@ -6,35 +6,39 @@ using Microsoft.AspNetCore.Mvc;
 namespace AddressBook.API.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
-    public class AuthController(IAuthService authService) : BaseApiController
+    [Route("api/[controller]")]
+    public class AuthController(IAuthService authService) : ControllerBase
     {
+        /// <summary>
+        /// Registers a new user and returns a JWT token.
+        /// </summary>
         [HttpPost("register")]
+        [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), 201)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
         public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register(RegisterDto dto)
         {
             var result = await authService.RegisterAsync(dto);
 
             if (!result.Success)
-                return Failure<AuthResponseDto>(result.Message!);
+                return Unauthorized(result.Message);
 
-            return Success(new AuthResponseDto
-            {
-                Token = result.Token!
-            }, 201);
+            return Ok(new AuthResponseDto { Token = result.Token! }); 
         }
 
+        /// <summary>
+        /// Logs in a user and returns a JWT token.
+        /// </summary>
         [HttpPost("login")]
+        [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 401)]
         public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login(LoginDto dto)
         {
             var result = await authService.LoginAsync(dto);
 
             if (!result.Success)
-                return Failure<AuthResponseDto>(result.Message!, 401);
+                return Unauthorized(result.Message);
 
-            return Success(new AuthResponseDto
-            {
-                Token = result.Token!
-            });
+            return Ok(new AuthResponseDto { Token = result.Token! });
         }
     }
 }

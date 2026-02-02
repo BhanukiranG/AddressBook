@@ -4,7 +4,7 @@ namespace AddressBook.Application.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<Users?> GetByEmailAsync(string email);
-        Task<int> AddAsync(Users user);
+        Task<Users?> GetUserByEmailAsync(string email);
+        Task<int> AddUserAsync(Users user);
     }
 }
